@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Function Plot</title>
+  <meta charset="UTF-8">
+  <link href="bootstrap_css/bootstrap.min.css" rel="stylesheet">
+  <link href="bootstrap_css/bootstrap-theme.min.css" rel="stylesheet">
+  <link href="assets/styles/page.css" rel="stylesheet">
+  <link href="assets/styles/base.css" rel="stylesheet">
+  <link href="assets/styles/ui.css" rel="stylesheet">
+  <script src="dev-lib/kitygraph.all.js"></script>
+  <script src="dev-lib/kitygraph.all.js"></script>
+  <script src="dev-lib/kity-formula.all.js"></script>
+  <script src="dev-lib/kityformula-parser.all.js"></script>
+  <script src="dev-lib/dev-define.js"></script>
+  <script src="js/jquery-3.2.1.min.js"></script>
+  <script src="js/bootstrap.min.js"></script>
+  <script src="js/d3.v3.min.js"></script>
+  <script src="js/function-plot.js"></script>
+  <script src="js/default.js"></script>
+  <script src="js/html2canvas.min.js"></script>
+  <script src="js/FileSaver.js"></script>
+  <script src="js/c.js"></script>
+  <script>
+    inc.config({
+      base: './src'
+    });
+  </script>
+  <script src="dev-lib/exports.js"></script>
+  <script src="dev-lib/dev-start.js"></script>
+  <script>
+    jQuery( function ($) {
+      var KFEditor = kf.Editor;
+      var editor = new KFEditor( $( "#kfEditorContainer" )[ 0 ] );
+      editor.execCommand( "render", "\\placeholder" )
+      c.start( editor );
+    });
+  </script>
+</head>
+
+
+<body>
+  <div style="position: absolute; top: 0; left: 100px; z-index: 9999;" id="top1"></div> 
+  <div style="position: absolute; width: 100%;" id="kfEditorContainer" class="kf-editor"></div>
+  <div style="position: absolute; top: -3px; left: 850px; width: 300px; z-index: 9999;" class="panel-body">
+      请务必在选中下方方块后再输入公式
+  </div>
+  <div style="position: absolute; top: 20px; left: 850px; width: 390px; z-index: 9999;" class="panel-body">
+    删除时请务必选中符号再删除，全部删除后仍可输入。
+  </div>
+
+  <!-- hidden input -->
+  <input style="position: fixed; top: 0; left: 999999px; width: 1000px; z-index: 9999;" id="hiddenInput" type="text">
+    
+  <div class="container-fluid" style="position: absolute; z-index: 2; top: 280px; width: 100%;">
+    <!-- 界面第一列，画布配置 -->
+    <div class="col-lg-3">
+      <h4>
+        <p>
+        <div class="input-group">
+          <!-- x 最小值 -->
+          <span style="float:left; line-height: 25px;" class="label label-success">x: MinVal</span>
+          <input style="float:left; width:30%; line-height: 25px;" class="form-control input-sm"
+            type="number" id="xMin" placeholder="Input x min value..." value=-5 step=0.5 oninput="plot();">
+        </div>
+        </p>
+
+        <p>
+        <div class="input-group">
+          <!-- x 最大值 -->
+          <span style="float:left; line-height: 25px;" class="label label-success">x: MaxVal</span>
+          <input style="float:left; width:30%; line-height: 25px;" class="form-control input-sm"
+            type="number" id="xMax" placeholder="Input x max value..." value=5 step=0.5 oninput="plot();">
+        </div>
+        </p>
+
+        <p>
+        <div class="input-group">
+          <!-- y 最小值 -->
+          <span style="float:left; line-height: 25px;" class="label label-danger">y: MinVal</span>
+          <input style="float:left; width:30%; line-height: 25px;" class="form-control input-sm"
+            type="number" id="yMin" placeholder="Input y min value..." value=-5 step=0.5 oninput="plot();">
+        </div>
+        </p>
+
+        <p>
+        <div class="input-group">
+          <!-- y 最大值 -->
+          <span style="float:left; line-height: 25px;" class="label label-danger">y: MaxVal</span>
+          <input style="float:left; width:30%; line-height: 25px;" class="form-control input-sm"
+            type="number" id="yMax" placeholder="Input y max value..." value=5 step=0.5 oninput="plot();">
+        </div>
+        </p>
+
+        <p>
+        <div class="input-group">
+          <!-- 是否显示网格 -->
+          <span class="label label-default" style="float:left; line-height: 25px;">show grid</span>
+          <select style="float:left; line-height: 25px;" class="custom-select" id="show_grid" onchange="plot();">
+            <option selected value="true">Yes</option>
+            <option value="false">No</option>
+          </select>
+        </div>
+        </p>
+
+        <p>
+        <div class="input-group">
+          <!-- 刻度（线性/对数） -->
+          <span class="label label-warning" style="float:left; line-height: 25px;">x_axis_type</span>
+          <select style="width:50%; line-height: 25px;" class="custom-select" id="x_axis_type"
+            onchange="plot();">
+            <option selected value='linear'>Linear</option>
+            <option value='log'>Logarithmic</option>
+          </select>
+        </div>
+        </p>
+
+        <p>
+        <div class="input-group">
+          <!-- x轴标记 -->
+          <span style="float:left; line-height: 25px;" class="label label-primary">x label</span>
+          <input style="float:left; width:30%; line-height: 25px;" class="form-control input-sm"
+            type="text" id="xLabel" value="x-axis" placeholder="Input x label..." onchange="plot();">
+        </div>
+        </p>
+
+        <p>
+        <div class="input-group">
+          <!-- y轴标记 -->
+          <span style="float:left; line-height: 25px;" class="label label-primary">y label</span>
+          <input style="float:left; width:30%; line-height: 25px;" class="form-control input-sm"
+            type="text" id="yLabel" value="y-axis" placeholder="Input y label..." onchange="plot();">
+        </div>
+
+        </p>
+      </h4>
+    </div>
+
+    <div class="col-lg-6">
+      <!-- 画布 -->
+      <div id="myFunction" class="col-lg-12"></div>
+      
+      <div class="col-sm-12">
+        <!-- 保存为图片 -->
+        <button type="button" class="btn btn-md btn-success pull-right" onclick="Save('myFunction')">Save as Pic</button>
+      </div>
+
+      <div class="col-sm-12"><hr class="featurette-divider"></div>
+
+      <!-- Tutorial 如何正确输入函数 -->
+      <div class="row">
+        <div class="col-sm-6">
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <h3 class="panel-title">Polynomial</h3>
+            </div>
+            <div class="panel-body">
+              Eg: 2 * x ^ 3 + 3 * x ^ 2 + x
+            </div>
+          </div>
+
+          <div class="panel panel-primary">
+            <div class="panel-heading">
+              <h3 class="panel-title">Exponential</h3>
+            </div>
+            <div class="panel-body">
+              Eg: 2 ^ x (do not support <strong>e ^ x</strong>)
+            </div>
+          </div>
+
+          <div class="panel panel-warning">
+            <div class="panel-heading">
+              <h3 class="panel-title">Combination</h3>
+            </div>
+            <div class="panel-body">
+              Eg: sin(x) * x / (x + 1)
+            </div>
+          </div>
+
+        </div>
+
+        <div class="col-sm-6">
+          <div class="panel panel-success">
+            <div class="panel-heading">
+              <h3 class="panel-title">Logarithmic</h3>
+            </div>
+            <div class="panel-body">
+              Eg: log(x) (equal to <strong>ln(x)</strong>), log10(x)
+            </div>
+          </div>
+          <div class="panel panel-info">
+            <div class="panel-heading">
+              <h3 class="panel-title">Trigonometric</h3>
+            </div>
+            <div class="panel-body">
+              Eg: sin(x), cos(x), tan(x), tanh(x)
+            </div>
+          </div>
+
+          <div class="panel panel-primary">
+            <div class="panel-heading">
+              <h3 class="panel-title">Parametric</h3>
+            </div>
+            <div class="panel-body">
+              Eg: x = cos(t), y = sin(t)
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div> 
+
+    <div class="col-lg-3" id="config">
+      <!-- 添加函数（普通/参数方程） -->
+      <div class="btn-group">
+        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Add<span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu">
+          <li><a href="#" onclick="Add_Normal()">Normal</a></li>
+          <li><a href="#" onclick="Add_Param()">Parametric</a></li>
+        </ul>
+      </div>
+
+      <!-- 普通函数的block。该block不显示，从而可以全部删除函数再添加，否则必须要显示一个block -->
+      <div id="config_block_0" style="display: none;">
+        <p>
+        <h4>Function</h4>
+        <!-- 函数配置（颜色、线型等） -->
+        <div class="input-group">
+          <span style="float:left; line-height: 25px;" class="label label-primary">color</span>
+          <input style="float:left; line-height: 25px;" type="color" id="color0" onchange="plot();">
+          <span class="label label-warning" style="float:left; line-height: 25px;">line_type</span>
+          <select style="line-height: 25px;" class="custom-select" id="line_type0" onchange="plot();">
+            <option selected value='polyline'>Line</option>
+            <option value='scatter'>Dot</option>
+          </select>
+        </div>
+        </p>
+        
+        <p>
+          <div class="input-group">
+            <span style="float:left; line-height: 25px;" class="label label-info">Function to plot</span>
+            <!-- 默认 y = x -->
+            <input style="float:left; width: 80%; line-height: 25px;" class="form-control input-sm"
+              type="text" id="function0" placeholder="Input your function..." value="x" onchange="plot();">
+          </div>
+        </p>
+
+        <!-- 绘制、删除键 -->
+        <button type="button" class="btn btn-lg btn-success" onclick="plot()">Plot</button>
+        <button type="button" class="btn btn-lg btn-danger" onclick="Delete(this.parentNode)">Delete</button>
+        <hr class="featurette-divider">
+
+      </div>
+
+      <!-- 同上，参数方程的配置 -->
+      <div id="param_config_block_0" style="display: none;">
+        <p>
+        <h4>Function</h4>
+        <div class="input-group">
+          <span style="float:left; line-height: 25px;" class="label label-primary">color</span>
+          <input style="float:left; line-height: 25px;" type="color" id="param_color0" onchange="plot();">
+          <span class="label label-warning" style="float:left; line-height: 25px;">line_type</span>
+          <select style="line-height: 25px;" class="custom-select" id="param_line_type0" onchange="plot();">
+            <option selected value='polyline'>Line</option>
+            <option value='scatter'>Dot</option>
+          </select>
+        </div>
+        </p>
+        
+        <p>
+        <div class="input-group">
+          <span style="float:left; line-height: 25px;" class="label label-info">x</span>
+          <!-- 默认 x = cos(t) -->
+          <input style="float:left; width: 80%; line-height: 25px;" class="form-control input-sm"
+            type="text" id="param_x0" placeholder="Input parametric x..." value="cos(t)" onchange="plot();">
+        </div>
+        </p>
+
+        <p>
+          <div class="input-group">
+            <span style="float:left; line-height: 25px;" class="label label-info">y</span>
+            <!-- 默认 y = sin(t) -->
+            <input style="float:left; width: 80%; line-height: 25px;" class="form-control input-sm"
+              type="text" id="param_y0" placeholder="Input parametric y..." value="sin(t)" onchange="plot();">
+          </div>
+        </p>
+
+        <!-- 绘制、删除键 -->
+        <button type="button" class="btn btn-lg btn-success" onclick="plot()">Plot</button>
+        <button type="button" class="btn btn-lg btn-danger" onclick="Delete(this.parentNode)">Delete</button>
+        <hr class="featurette-divider">
+
+      </div>
+      
+    </div> 
+  </div>
+</body>
+
+<script>
+  // 默认添加一个普通函数
+  Add_Normal();
+  // 画图
+  plot();
+</script>
+
+</html>

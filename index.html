@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <link rel="icon" type="image/x-icon" href="icon/favicon.ico">
+  <link href="css/bootstrap.min.css" rel="stylesheet">
+  <link href="css/navbar.css" rel="stylesheet">
+  <script src="js/jquery-3.2.1.min.js"></script>
+  <script src="js/vue.js"></script>
+  <script src="js/bootstrap.min.js"></script>
+
+  <title>Function Plot</title>
+
+  <!-- Vue Message board -->
+  <script>
+    window.onload = function () {
+      var vm = new Vue({
+        el: '#app',
+        data: {
+          title: 'Message board',
+          nikename: '',
+          content: '',
+          date: '',
+          query: '',
+          changeContent: '',
+          bl: true,
+          list: [
+              {
+                id: 1, nikename: "Fanze", content: 'good job!'
+              },
+          ]
+        },
+
+        methods: {
+          // add
+          add: function () {
+            this.list.push ({
+              id: this.list.length + 1,
+              nikename: this.nikename,
+              content: this.content
+            })
+
+            this.nikename = '';
+            this.content = '';
+          },
+          
+          // delete
+          del: function (index, id) {
+            this.list.splice(index, 1)
+          },
+
+          // clear
+          clear: function () {
+            this.list = [];
+          },
+        },
+          
+        computed: {
+          // search
+          search: function() {
+            let result = [];
+            this.list.forEach((item, index) => {
+                if(item.nikename.includes(this.query) || item.content.includes(this.query)) {
+                    result.push(item);
+                }
+            })
+            return result;
+          },
+        },
+      }); 
+    }
+  </script>
+</head>
+
+<body>
+  <div class="container" style="width: 90%">
+    <!-- nav bar -->
+    <nav class="navbar navbar-default">
+      <div class="container-fluid">
+        <!-- header -->
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar"
+            aria-expanded="true" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand">Function Graph</a>
+        </div>
+        
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            <li class="active"><a data-toggle="tab" href="#automatic">Automatic-draw</a></li>
+            <li><a data-toggle="tab" href="#manual">Manual-draw</a></li>
+            <li><a data-toggle="tab" href="#about">About</a></li>
+            <li><a data-toggle="tab" href="#tutorial">Tutorial</a></li>
+            <li><a data-toggle="tab" href="#faqs">FAQs</a></li>
+            <li><a data-toggle="tab" href="#comment">Comment</a></li>
+            <li><a data-toggle="tab" href="#contact">Contact</a></li>
+            <li><a data-toggle="tab">(Please refresh the page if Automatic-draw can't show up!)</a></li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <div class="tab-content">
+      <!-- Automatic-draw 公式画图（默认显示该页面） -->
+      <div class="tab-pane fade in active" id="automatic">
+        <iframe id="automatic_plot" width="100%" height=1100 src="plot_auto/index.html" frameborder="no" marginwidth="0" marginheight="0" scrolling="auto"></iframe>
+      </div>
+
+      <!-- Manual-draw 手工画图 -->
+      <div class="tab-pane fade" id="manual">
+        <iframe id="manual_plot" width="100%" height=1100 src="plot_manual/index.html" frameborder="no" marginwidth="0" marginheight="0" scrolling="auto"></iframe>
+      </div>
+
+      <!-- About 简介 -->
+      <div class="tab-pane fade" id="about">
+        <div class="jumbotron">
+          <h1>Plot function on web</h1>
+          <div class="alert alert-danger" role="alert">
+            <strong>Note!</strong> We recommend you to open this website on Google Chrome.
+          </div>
+
+          <h2>- Plot a function (by formula / manual)</h2>
+          <p>This is a website where you can use formulas or draw graphs of functions by hand. If you want to plot the image using formula, you can click<em><strong><a data-toggle="tab" href="#automatic">Automatic-draw</a></strong></em>. Our website supports various kinds of plots, including:</p>
+          <p>&nbsp;&nbsp;&nbsp; · Polynomial Function (E.g.: y = a * x ^ 2 + b * x + c)</p>
+          <p>&nbsp;&nbsp;&nbsp; · Logarithmic Function (E.g.: y = a * log(x))</p>
+          <p>&nbsp;&nbsp;&nbsp; · Exponential Function (E.g.: y = a ^ x)</p>
+          <p>&nbsp;&nbsp;&nbsp; · Trigonometric Function (E.g.: y = a * sin(x))</p>
+          <p>&nbsp;&nbsp;&nbsp; · Parametric Function (E.g.: x = a * cos(t), y = b * sin(t))</p>
+          <p>and their four arithmetic operations. <em>a</em>, <em>b</em>, and <em>c</em> are parameters. You can also customize the axis range, scale, color, etc.</p>
+          <p>Additionally, you can also click<em><strong><a data-toggle="tab" href="#manual"> Manual-draw </a></strong></em>to draw graphs manually</p>
+          <br>
+
+          <h2>- Have question?</h2>
+          <p>You can click <em><strong><a data-toggle="tab" href="#tutorial">Tutorial</a></strong></em> to get help. Also,<em><strong><a data-toggle="tab" href="#faqs"> FAQs </a></strong></em>lists some common questions.</p>
+          <br>
+
+          <h2>- Give us suggestions</h2>
+          <p>If you find a bug or have any suggestions related to this project, you can click<em><strong><a data-toggle="tab" href="#contact"> Contact</a></strong></em> to send an email to the corresponding member</p>
+          <br>
+
+          <h2>- Leave comments</h2>
+          <p>Leave comments in <em><strong><a data-toggle="tab" href="#comment">Comment</a></strong></em>!</p>
+        </div>
+      </div>
+      
+      <!-- Tutorial 教程 -->
+      <div class="tab-pane fade" id="tutorial">
+        <div class="jumbotron">
+          <h2>Automatic-draw 简易教程</h2>
+          <p>1. 公式编辑器</p>
+          <p>选中公式框后即可输入公式，支持上下标、向量、分式等输入。滑动鼠标滚轮可以改变公式大小。删除时，若您选择了本公式编辑器自带的分数/上下标/根式等内容，请选中后再删除。公式全部删除后，虽然输入框会消失，但此时仍可继续输入。特殊情况：全部删除后点击其他页面（如Manual-draw），再返回Automatic-draw，则无法输入公式。</p>
+          <br>
+
+          <p>2. 函数图像绘制</p>
+          <p>左侧为画布配置，可选择刻度（线性/对数）、x轴和y轴范围、x轴和y轴标记。中间为画布，鼠标放置在画布上，滑动滚轮可以改变x轴和y轴范围，并实时显示坐标。右侧可以输入您想绘制的图像，支持的函数格式输入已经在画布下方列出，可绘制多项式(Polynomial) / 对数(Logarithmic) / 指数(Exponential) / 三角函数(Trigonometric) 以及和它们有关的四则运算。也可以输入参数方程。输入公式后点击 Plot 即可绘制图像，可更改线型、颜色。通过点击 Add 可以添加普通函数/参数方程，支持多张图像在画布中显示。点击 Delete 可以删除某张图像。</p>
+          <br>
+
+          <h2>Manual-draw 简易教程</h2>
+          <p>若您想显示坐标轴，可以点击下方的 Axis。保存图片可以点击 SaveImg，清除画布可以点击 ClearImg。在 Tools 中，如果需要输入文字，请先点击画布上需要输入文字的空白处，随后在输入框输入文字。Tools 还支持橡皮擦和喷漆，橡皮擦的大小可以通过 Line 中线的粗细来调节。在 Shapes 中，可以选择矩形、三角形、圆等。Line 中列出了支持的线型。所有元素均可选择自身的 Color。</p>
+        </div>
+      </div>
+
+      <!-- FAQs 快问快答 -->
+      <div class="tab-pane fade" id="faqs">
+        <div class="jumbotron">
+          <h2>下面列出了一些常见问题。</h2>
+          <p><strong>Q</strong>: 打开页面后是空白的？</p>
+          <p><strong>A</strong>: 请多刷新几次，即可显示页面。</p>
+          <br>
+
+          <p><strong>Q</strong>: 公式编辑器中的公式全部删除后，输入框消失？</p>
+          <p><strong>A</strong>: 是的，但不影响二次输入公式。</p>
+          <br>
+        </div>
+      </div>
+
+      <!-- Comment 评论 -->
+      <div class="tab-pane fade" id="comment">
+        <div id="app" class="container-fluid">
+          <ul class="form-group" style="max-height: 300px; overflow: hidden;">
+            <li class="list-group-item row" v-for="(item, index) in search" v-bind:key="item.id">
+              <span class='col-lg-1'>{{item.nikename}}：</span>
+              <span class='col-lg-5'>{{item.content}}</span>
+              <button class='col-sm-2 btn btn-warning' style="float: right;" type="button" @click="del(index, item.id)">删除</button>
+            </li>
+          </ul>
+          <br><br><br>
+
+          <form class="form-horizontal" v-show="bl">
+            <div class="form-group">
+              <label for="nikename" class="col-lg-1 control-label">昵称</label>
+              <div class="col-lg-11">
+                <input type="text" class="form-control" id="nikename" placeholder="Enter your nickname..." v-model="nikename">
+              </div>
+            </div>
+            
+            <div class="form-group">
+              <label for="content" class="col-lg-1 control-label">评论</label>
+              <div class="col-lg-11">
+                <textarea id="content" class="form-control" rows="3" v-model="content" placeholder="Your comment..."></textarea>
+              </div>
+            </div>
+          
+            <button type="button" class="btn btn-success col-lg-1 col-lg-push-10" @click="add">添加</button>
+            <button type="button" class="btn btn-danger col-lg-1 col-lg-push-10" @click="clear">清除</button>
+          
+          </form>
+        </div>
+      </div>
+
+      <!-- Contact 联系 -->
+      <div class="tab-pane fade" id="contact">
+        <div class="jumbotron">
+          <h2>小组成员</h2>
+          <p>· 王紫璇 (MF20230111)，负责框架设计、按数学公式画图设计。E-mail: <a href="mailto:zxwang9811@gmail.com">zxwang9811@gmail.com</a>.</p>
+          <p>· 刘昊 (MF20230065)，负责公式编辑器设计。E-mail: <a href="mailto:mf20230065@smail.nju.edu.cn">MF20230065@smail.nju.edu.cn</a>.</p>
+          <p>· 孟凡泽 (MF20230076)，负责手工画图设计。E-mail: <a href="mailto:fan_ze_meng@163.com">fan_ze_meng@163.com</a>.</p>
+          <p>· 杨如琪 (MF20230134)，负责手工画图设计。E-mail: <a href="mailto:ruqiyang830@163.com">ruqiyang830@163.com</a>.</p>
+        </div>
+      </div>
+    </div>
+    
+    <!-- 分割线 -->
+    <hr class="featurette-divider">
+
+    <!-- 页脚 -->
+    <footer>
+      <p class="pull-right"><a href="#">Back to top</a></p>
+      <p>&copy; 2020 Fall: Software Engineering Practice. School of Electronic Science and Engineering, Nanjing University.</p>
+    </footer>
+
+  </div>
+
+  <!-- About 页面超链接跳转到其他页面，设置 active 页面 -->
+  <script>
+    $('a[data-toggle="tab"]').on('shown.bs.tab', function() {
+      $('nav').find('li.active').removeClass('active');
+      $('nav').find('a[href="#'+$('.tab-pane.active').attr('id')+'"]').parent('li').addClass('active');
+    });
+  </script>
+
+</body>
+</html>

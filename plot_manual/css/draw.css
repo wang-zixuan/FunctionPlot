@@ -1,0 +1,30 @@
+*{margin:0;padding:0;}
+body{background:rgb(244, 244, 244);}
+#header{width: 900px;height:10px;font-size: 2px;margin:0 auto;text-align: center;line-height: 80px;}
+#content{width: 900px;height:900px;background:rgb(244, 244, 244);margin:0 auto;padding:10px;}
+#tool{width:880px;height:140px;background:rgb(232, 242, 248);}
+#tool>li{list-style: none;width:175px;height:140px;float:left;border-right:10 solid #ddd;text-align: center;margin-bottom: 2px;}
+#tool>li:last-child{border-right:none;}
+
+#image li{width:100%;list-style: none; margin:20px auto;overflow: hidden;}
+#image li button:hover{border:medium solid white;}
+#myform{overflow: hidden;height:100%;}
+#tools {width:200px;height:60px;margin:20px auto;list-style: none;}
+#tools li{width:30px;height:20px;float:left;margin-bottom: 10px;border:0.5px solid}
+#tools li:hover{border:thin solid orange;}
+#tools li:first-child{background: white;}
+#tools li img{display: block;width:20px;height:20px;margin:0 auto}
+
+#shape {width:150px;height:60px;margin:20px auto;list-style: none;}
+#shape li{width:48px;height:20px;float:left;margin-bottom: 10px;border:1px solid }
+#shape li:hover{border:thin solid orange;}
+#shape li img{display: block;width:20px;height:20px;margin:0 auto}
+#size{margin-top:20px;}
+#size  li{list-style: none;}
+#size li:first-child{background-color: white;}
+#size li:hover{border:thin solid orange;}
+#color{width:146px;height:60px;margin:20px auto;overflow: hidden;}
+#color li{list-style: none;float:left;width:20px;height:20px;margin-left:6px;margin-top:5px;border:3px solid #fff;box-sizing: border-box;}
+#color li:hover{border-color:deepskyblue !important;}
+#canvas{background:white}
+#footer{width:900px;height:30px;margin:0 auto;text-align: center;}
